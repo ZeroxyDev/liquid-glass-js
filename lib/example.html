@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Glass — The Glass Effect Library</title>
+    <link rel="stylesheet" href="liquid-glass.css">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --color-background: #fbfbfd;
+            --color-surface: #ffffff;
+            --color-text-primary: #1d1d1f;
+            --color-text-secondary: #86868b;
+            --color-text-tertiary: #6e6e73;
+            --color-border: rgba(0, 0, 0, 0.08);
+            --color-accent: #0071e3;
+            --color-accent-hover: #0077ed;
+            --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 80px;
+            --spacing-2xl: 120px;
+            --max-width: 980px;
+            --max-width-wide: 1200px;
+            --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+        }
+
+        /* ===== Typography ===== */
+        .headline-super {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .headline-large {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .headline-medium {
+            font-size: clamp(24px, 3vw, 40px);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .headline-small {
+            font-size: clamp(19px, 2vw, 24px);
+            font-weight: 600;
+            letter-spacing: -0.012em;
+            line-height: 1.2;
+        }
+
+        .body-large {
+            font-size: clamp(17px, 1.5vw, 21px);
+            font-weight: 400;
+            line-height: 1.52941;
+            color: var(--color-text-secondary);
+        }
+
+        .body-regular {
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.47059;
+        }
+
+        .caption {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-text-tertiary);
+        }
+
+        /* ===== Layout ===== */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .container-wide {
+            max-width: var(--max-width-wide);
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .section {
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--color-border);
+            margin: 0 auto;
+            max-width: var(--max-width);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero-eyebrow {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .hero-title {
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(180deg, var(--color-text-primary) 0%, var(--color-text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            max-width: 600px;
+            margin: 0 auto var(--spacing-lg);
+        }
+
+        .hero-demo {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            margin: var(--spacing-xl) auto 0;
+            border-radius: 24px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(120, 119, 198, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255, 45, 85, 0.08), transparent),
+                linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+        }
+
+        .hero-demo-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+        }
+
+        .hero-demo-text {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            opacity: 0.15;
+        }
+
+        .hero-glass {
+            position: absolute;
+            width: 220px;
+            height: 150px;
+            border-radius: 75px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-hint {
+            position: absolute;
+            bottom: var(--spacing-md);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--color-text-tertiary);
+            font-size: 14px;
+        }
+
+        .hero-hint-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+        }
+
+        /* ===== Features Grid ===== */
+        .features-intro {
+            max-width: 700px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .feature-card {
+            background: var(--color-surface);
+            border-radius: 20px;
+            padding: var(--spacing-lg);
+            border: 1px solid var(--color-border);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(0, 113, 227, 0.1), rgba(0, 113, 227, 0.05));
+            color: var(--color-accent);
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .feature-title {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .feature-description {
+            color: var(--color-text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* ===== Surface Types Section ===== */
+        .surfaces-section {
+            background: var(--color-surface);
+        }
+
+        .surfaces-header {
+            max-width: 600px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .surfaces-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-lg);
+        }
+
+        @media (max-width: 768px) {
+            .surfaces-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .surface-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .surface-demo {
+            width: 120px;
+            height: 80px;
+            border-radius: 40px;
+            margin-bottom: var(--spacing-md);
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent 50%),
+                linear-gradient(135deg, #e8e8ed 0%, #d2d2d7 100%);
+        }
+
+        .surface-name {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .surface-label {
+            font-size: 14px;
+            color: var(--color-text-tertiary);
+        }
+
+        /* ===== Interactive Demo Section ===== */
+        .demo-section {
+            background: var(--color-background);
+        }
+
+        .demo-header {
+            max-width: 600px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: var(--spacing-lg);
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .demo-preview {
+            position: relative;
+            height: 500px;
+            border-radius: 24px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 100% 60% at 50% 0%, rgba(120, 119, 198, 0.12), transparent),
+                linear-gradient(180deg, #f5f5f7 0%, #e8e8ed 100%);
+        }
+
+        .demo-preview-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-lg);
+        }
+
+        .demo-preview-text {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            opacity: 0.08;
+            user-select: none;
+        }
+
+        .demo-glass {
+            position: absolute;
+            width: 200px;
+            height: 140px;
+            border-radius: 70px;
+            left: 40px;
+            top: 40px;
+        }
+
+        .demo-controls {
+            background: var(--color-surface);
+            border-radius: 20px;
+            padding: var(--spacing-lg);
+            border: 1px solid var(--color-border);
+        }
+
+        .controls-title {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .control-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .control-label {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .control-value {
+            font-size: 14px;
+            color: var(--color-text-tertiary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .control-slider {
+            width: 100%;
+            height: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--color-border);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+            transition: transform 0.15s ease;
+        }
+
+        .control-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .control-button {
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--color-border);
+            border-radius: 980px;
+            background: transparent;
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .control-button:hover {
+            background: var(--color-border);
+        }
+
+        .control-button.active {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: white;
+        }
+
+        /* ===== Code Section ===== */
+        .code-section {
+            background: var(--color-surface);
+        }
+
+        .code-header {
+            max-width: 600px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--color-border);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: var(--spacing-md);
+            width: fit-content;
+        }
+
+        .code-tab {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .code-tab.active {
+            background: var(--color-surface);
+            color: var(--color-text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .code-block {
+            background: #1d1d1f;
+            border-radius: 16px;
+            padding: var(--spacing-md);
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #f5f5f7;
+        }
+
+        .code-comment {
+            color: #6e6e73;
+        }
+
+        .code-keyword {
+            color: #ff7b72;
+        }
+
+        .code-string {
+            color: #a5d6ff;
+        }
+
+        .code-property {
+            color: #79c0ff;
+        }
+
+        .code-number {
+            color: #ffa657;
+        }
+
+        .code-punctuation {
+            color: #8b949e;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-logo {
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer-link {
+            font-size: 14px;
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: opacity 0.15s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 0.7;
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+        }
+
+        /* ===== Scroll Animations ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="caption hero-eyebrow">Introducing</p>
+            <h1 class="headline-super hero-title">Liquid Glass</h1>
+            <p class="body-large hero-subtitle">
+                The glass effect library for the web. Beautiful refraction,
+                specular highlights, and spring physics — all in one lightweight package.
+            </p>
+        </div>
+
+        <div class="hero-demo">
+            <div class="hero-demo-content">
+                <span class="hero-demo-text">Drag me</span>
+            </div>
+            <div class="hero-glass" id="hero-glass"></div>
+            <div class="hero-hint">
+                <svg class="hero-hint-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+                <span>Drag to interact</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <div class="features-intro text-center fade-in">
+                <p class="caption">Features</p>
+                <h2 class="headline-large" style="margin-top: var(--spacing-sm);">
+                    Everything you need.
+                </h2>
+                <p class="body-large" style="margin-top: var(--spacing-sm);">
+                    Powerful features wrapped in a simple API.
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                    </div>
+                    <h3 class="headline-small feature-title">Real Refraction</h3>
+                    <p class="feature-description">
+                        Physically accurate light bending using Snell's Law for authentic glass distortion.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                    </div>
+                    <h3 class="headline-small feature-title">Specular Highlights</h3>
+                    <p class="feature-description">
+                        Dynamic light reflections that respond to the glass surface curvature.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="headline-small feature-title">Spring Physics</h3>
+                    <p class="feature-description">
+                        Natural feeling animations with configurable stiffness and damping.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                        </svg>
+                    </div>
+                    <h3 class="headline-small feature-title">Cross-Browser</h3>
+                    <p class="feature-description">
+                        Works everywhere with intelligent fallback for maximum compatibility.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                        </svg>
+                    </div>
+                    <h3 class="headline-small feature-title">Zero Dependencies</h3>
+                    <p class="feature-description">
+                        Lightweight and self-contained. No external libraries required.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                        </svg>
+                    </div>
+                    <h3 class="headline-small feature-title">Fully Customizable</h3>
+                    <p class="feature-description">
+                        Every parameter is configurable via options or data attributes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Surface Types Section -->
+    <section class="section surfaces-section">
+        <div class="container">
+            <div class="surfaces-header text-center fade-in">
+                <p class="caption">Surface Types</p>
+                <h2 class="headline-large" style="margin-top: var(--spacing-sm);">
+                    Four distinct profiles.
+                </h2>
+                <p class="body-large" style="margin-top: var(--spacing-sm);">
+                    Choose the perfect glass curvature for your design.
+                </p>
+            </div>
+
+            <div class="surfaces-grid">
+                <div class="surface-item fade-in">
+                    <div class="surface-demo" id="surface-squircle"></div>
+                    <span class="surface-name">Squircle</span>
+                    <span class="surface-label">Default</span>
+                </div>
+                <div class="surface-item fade-in">
+                    <div class="surface-demo" id="surface-circle"></div>
+                    <span class="surface-name">Circle</span>
+                    <span class="surface-label">Smooth</span>
+                </div>
+                <div class="surface-item fade-in">
+                    <div class="surface-demo" id="surface-concave"></div>
+                    <span class="surface-name">Concave</span>
+                    <span class="surface-label">Lens</span>
+                </div>
+                <div class="surface-item fade-in">
+                    <div class="surface-demo" id="surface-lip"></div>
+                    <span class="surface-name">Lip</span>
+                    <span class="surface-label">Raised edge</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Interactive Demo Section -->
+    <section class="section demo-section">
+        <div class="container-wide">
+            <div class="demo-header text-center fade-in">
+                <p class="caption">Playground</p>
+                <h2 class="headline-large" style="margin-top: var(--spacing-sm);">
+                    Try it yourself.
+                </h2>
+                <p class="body-large" style="margin-top: var(--spacing-sm);">
+                    Adjust parameters in real-time to see the effect.
+                </p>
+            </div>
+
+            <div class="demo-container fade-in">
+                <div class="demo-preview">
+                    <div class="demo-preview-content">
+                        <span class="demo-preview-text">Glass</span>
+                    </div>
+                    <div class="demo-glass" id="demo-glass"></div>
+                </div>
+
+                <div class="demo-controls">
+                    <p class="controls-title">Parameters</p>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Surface Type</span>
+                        </div>
+                        <div class="control-buttons">
+                            <button class="control-button active" data-surface="convex_squircle">Squircle</button>
+                            <button class="control-button" data-surface="convex_circle">Circle</button>
+                            <button class="control-button" data-surface="concave">Concave</button>
+                            <button class="control-button" data-surface="lip">Lip</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Bezel Width</span>
+                            <span class="control-value" id="bezel-value">30</span>
+                        </div>
+                        <input type="range" class="control-slider" id="bezel-slider" min="5" max="70" value="30">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Glass Thickness</span>
+                            <span class="control-value" id="thickness-value">150</span>
+                        </div>
+                        <input type="range" class="control-slider" id="thickness-slider" min="10" max="200" value="150">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Refraction Scale</span>
+                            <span class="control-value" id="refraction-value">1.50</span>
+                        </div>
+                        <input type="range" class="control-slider" id="refraction-slider" min="0" max="3" step="0.05"
+                            value="1.5">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Specular Opacity</span>
+                            <span class="control-value" id="specular-value">1.00</span>
+                        </div>
+                        <input type="range" class="control-slider" id="specular-slider" min="0" max="1" step="0.01"
+                            value="1">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Blur</span>
+                            <span class="control-value" id="blur-value">0.5</span>
+                        </div>
+                        <input type="range" class="control-slider" id="blur-slider" min="0" max="10" step="0.1"
+                            value="0.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Code Section -->
+    <section class="section code-section">
+        <div class="container">
+            <div class="code-header text-center fade-in">
+                <p class="caption">Get Started</p>
+                <h2 class="headline-large" style="margin-top: var(--spacing-sm);">
+                    Simple to use.
+                </h2>
+                <p class="body-large" style="margin-top: var(--spacing-sm);">
+                    Add the glass effect to any element in seconds.
+                </p>
+            </div>
+
+            <div class="fade-in">
+                <div class="code-tabs">
+                    <button class="code-tab active" data-tab="es-module">ES Module</button>
+                    <button class="code-tab" data-tab="umd">Script Tag</button>
+                    <button class="code-tab" data-tab="data-attr">Data Attributes</button>
+                </div>
+
+                <div class="code-block" id="code-es-module">
+                    <pre><code><span class="code-comment">// Import the library</span>
+<span class="code-keyword">import</span> LiquidGlass <span class="code-keyword">from</span> <span class="code-string">'./liquid-glass.js'</span><span class="code-punctuation">;</span>
+
+<span class="code-comment">// Apply to an element</span>
+<span class="code-keyword">const</span> glass <span class="code-punctuation">=</span> <span class="code-keyword">new</span> LiquidGlass<span class="code-punctuation">(</span><span class="code-string">'#my-element'</span><span class="code-punctuation">,</span> <span class="code-punctuation">{</span>
+  <span class="code-property">draggable</span><span class="code-punctuation">:</span> <span class="code-keyword">true</span><span class="code-punctuation">,</span>
+  <span class="code-property">surfaceType</span><span class="code-punctuation">:</span> <span class="code-string">'convex_squircle'</span><span class="code-punctuation">,</span>
+  <span class="code-property">bezelWidth</span><span class="code-punctuation">:</span> <span class="code-number">30</span><span class="code-punctuation">,</span>
+  <span class="code-property">glassThickness</span><span class="code-punctuation">:</span> <span class="code-number">150</span>
+<span class="code-punctuation">}</span><span class="code-punctuation">)</span><span class="code-punctuation">;</span></code></pre>
+                </div>
+
+                <div class="code-block" id="code-umd" style="display: none;">
+                    <pre><code><span class="code-comment">&lt;!-- Include the styles --&gt;</span>
+<span class="code-punctuation">&lt;</span><span class="code-keyword">link</span> <span class="code-property">rel</span><span class="code-punctuation">=</span><span class="code-string">"stylesheet"</span> <span class="code-property">href</span><span class="code-punctuation">=</span><span class="code-string">"liquid-glass.css"</span><span class="code-punctuation">&gt;</span>
+
+<span class="code-comment">&lt;!-- Include the UMD script --&gt;</span>
+<span class="code-punctuation">&lt;</span><span class="code-keyword">script</span> <span class="code-property">src</span><span class="code-punctuation">=</span><span class="code-string">"liquid-glass.umd.js"</span><span class="code-punctuation">&gt;&lt;/</span><span class="code-keyword">script</span><span class="code-punctuation">&gt;</span>
+
+<span class="code-punctuation">&lt;</span><span class="code-keyword">script</span><span class="code-punctuation">&gt;</span>
+  <span class="code-keyword">var</span> glass <span class="code-punctuation">=</span> <span class="code-keyword">new</span> LiquidGlass<span class="code-punctuation">(</span><span class="code-string">'#my-element'</span><span class="code-punctuation">,</span> <span class="code-punctuation">{</span>
+    <span class="code-property">draggable</span><span class="code-punctuation">:</span> <span class="code-keyword">true</span>
+  <span class="code-punctuation">}</span><span class="code-punctuation">)</span><span class="code-punctuation">;</span>
+<span class="code-punctuation">&lt;/</span><span class="code-keyword">script</span><span class="code-punctuation">&gt;</span></code></pre>
+                </div>
+
+                <div class="code-block" id="code-data-attr" style="display: none;">
+                    <pre><code><span class="code-comment">&lt;!-- Use data attributes for configuration --&gt;</span>
+<span class="code-punctuation">&lt;</span><span class="code-keyword">div</span>
+  <span class="code-property">data-liquid-glass</span>
+  <span class="code-property">data-lg-surface</span><span class="code-punctuation">=</span><span class="code-string">"convex_squircle"</span>
+  <span class="code-property">data-lg-bezel</span><span class="code-punctuation">=</span><span class="code-string">"30"</span>
+  <span class="code-property">data-lg-draggable</span><span class="code-punctuation">=</span><span class="code-string">"true"</span>
+<span class="code-punctuation">&gt;&lt;/</span><span class="code-keyword">div</span><span class="code-punctuation">&gt;</span>
+
+<span class="code-punctuation">&lt;</span><span class="code-keyword">script</span><span class="code-punctuation">&gt;</span>
+  <span class="code-comment">// Auto-initialize all elements</span>
+  LiquidGlass<span class="code-punctuation">.</span>autoInit<span class="code-punctuation">(</span><span class="code-punctuation">)</span><span class="code-punctuation">;</span>
+<span class="code-punctuation">&lt;/</span><span class="code-keyword">script</span><span class="code-punctuation">&gt;</span></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-logo">Liquid Glass</p>
+            <div class="footer-links">
+                <a href="https://github.com/ZeroxyDev" target="_blank" class="footer-link">GitHub</a>
+                <a href="README.md" class="footer-link">Documentation</a>
+            </div>
+            <p class="footer-copyright">
+                Created by ZeroxyDev
+            </p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import LiquidGlass from './liquid-glass.js';
+
+        // Hero glass
+        const heroGlass = new LiquidGlass('#hero-glass', {
+            draggable: true,
+            surfaceType: 'convex_squircle',
+            bezelWidth: 35,
+            glassThickness: 150,
+            width: 220,
+            height: 150,
+            borderRadius: 75,
+        });
+
+        // Surface type demos
+        const surfaceTypes = [
+            { id: '#surface-squircle', type: 'convex_squircle' },
+            { id: '#surface-circle', type: 'convex_circle' },
+            { id: '#surface-concave', type: 'concave' },
+            { id: '#surface-lip', type: 'lip' },
+        ];
+
+        surfaceTypes.forEach(({ id, type }) => {
+            new LiquidGlass(id, {
+                draggable: false,
+                surfaceType: type,
+                bezelWidth: 25,
+                glassThickness: 100,
+                width: 120,
+                height: 80,
+                borderRadius: 40,
+                springAnimation: false,
+            });
+        });
+
+        // Interactive demo
+        const demoGlass = new LiquidGlass('#demo-glass', {
+            draggable: true,
+            surfaceType: 'convex_squircle',
+            bezelWidth: 30,
+            glassThickness: 150,
+            width: 200,
+            height: 140,
+            borderRadius: 70,
+        });
+
+        // Control sliders
+        const controls = {
+            'bezel': { slider: 'bezel-slider', value: 'bezel-value', prop: 'bezelWidth', format: v => Math.round(v) },
+            'thickness': { slider: 'thickness-slider', value: 'thickness-value', prop: 'glassThickness', format: v => Math.round(v) },
+            'refraction': { slider: 'refraction-slider', value: 'refraction-value', prop: 'refractionScale', format: v => v.toFixed(2) },
+            'specular': { slider: 'specular-slider', value: 'specular-value', prop: 'specularOpacity', format: v => v.toFixed(2) },
+            'blur': { slider: 'blur-slider', value: 'blur-value', prop: 'blur', format: v => v.toFixed(1) },
+        };
+
+        Object.values(controls).forEach(ctrl => {
+            const slider = document.getElementById(ctrl.slider);
+            const valueEl = document.getElementById(ctrl.value);
+
+            slider.addEventListener('input', () => {
+                const val = parseFloat(slider.value);
+                valueEl.textContent = ctrl.format(val);
+                demoGlass.setOptions({ [ctrl.prop]: val });
+            });
+        });
+
+        // Surface type buttons
+        document.querySelectorAll('[data-surface]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('[data-surface]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                demoGlass.setOptions({ surfaceType: btn.dataset.surface });
+            });
+        });
+
+        // Code tabs
+        document.querySelectorAll('.code-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                document.querySelectorAll('.code-block').forEach(block => block.style.display = 'none');
+                document.getElementById(`code-${tab.dataset.tab}`).style.display = 'block';
+            });
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+
+</html>

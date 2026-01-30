@@ -1,0 +1,138 @@
+/**
+ * Liquid Glass Library - CSS
+ * Minimal required styles for the liquid glass effect.
+ * 
+ * @version 1.0.0
+ * @author ZeroxyDev (https://github.com/ZeroxyDev)
+ */
+
+/* ===== Base Glass Element ===== */
+.lg-element {
+    position: relative;
+    overflow: hidden;
+    will-change: transform;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+}
+
+.lg-element:active {
+    cursor: grabbing;
+}
+
+/* ===== Inner Layer (shadows) ===== */
+.lg-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    will-change: transform, box-shadow;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* ===== Content Clone (fallback mode) ===== */
+.lg-content-clone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 1;
+    will-change: filter;
+    contain: strict;
+}
+
+/* Hide clone when using native backdrop-filter */
+.lg-use-backdrop-filter .lg-content-clone {
+    display: none;
+}
+
+.lg-content-clone-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: transform;
+    contain: layout style paint;
+}
+
+/* ===== SVG Filter Container ===== */
+.lg-filter-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+
+/* ===== Utility Classes ===== */
+
+/* No drag cursor */
+.lg-element.lg-no-drag {
+    cursor: default;
+}
+
+.lg-element.lg-no-drag:active {
+    cursor: default;
+}
+
+/* Disabled state */
+.lg-element.lg-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* ===== Preset Styles ===== */
+
+/* Pill shape */
+.lg-pill {
+    border-radius: 9999px;
+}
+
+/* Card shape */
+.lg-card {
+    border-radius: 16px;
+}
+
+/* Circle shape */
+.lg-circle {
+    border-radius: 50%;
+}
+
+/* ===== Size Presets ===== */
+
+.lg-sm {
+    width: 100px;
+    height: 60px;
+}
+
+.lg-md {
+    width: 200px;
+    height: 140px;
+}
+
+.lg-lg {
+    width: 300px;
+    height: 200px;
+}
+
+.lg-xl {
+    width: 400px;
+    height: 280px;
+}
+
+/* ===== Animation States ===== */
+
+.lg-element.lg-pressed {
+    transform: scale(1);
+}
+
+.lg-element.lg-resting {
+    transform: scale(0.85);
+}
